@@ -31,6 +31,24 @@ no_block_display=true;
 ## AnyKernel boot install
 dump_boot;
 
+kernel=/tmp/anykernel/
+
+function oc {
+    mv $kernel/oc $kernel/dtbo.img
+}
+
+case "$ZIPFILE" in
+  *OC*|*oc*)
+    ui_print "  • Flashing dtbo.img for support 60-102hz OC Timings Refresh Rate";
+    ui_print "  • Maybe not supported on some Roms, dissable it if you got stuck or bootloop,";
+    ui_print "  • and use OC Framerate Override methode just support 60-81hz";
+    oc
+    ;;
+    *)
+    ui_print "";
+    ;;
+esac
+
 case "$ZIPFILE" in
   *66fps*|*66hz*)
     ui_print "  • Setting 66 Hz refresh rate"
