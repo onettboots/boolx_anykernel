@@ -3,7 +3,7 @@
 # osm0sis @ xda-developers
 
 OUTFD=/proc/self/fd/$2;
-export ZIPFILE="$3";
+ZIPFILE="$3";
 
 BOOTMODE=false;
 ps | grep zygote | grep -v grep >/dev/null && BOOTMODE=true;
@@ -346,6 +346,7 @@ do_levelcheck() {
 }
 dump_moduleinfo() {
 $BB cat <<EOF > $1;
+id=ak3-helper
 name=AK3 Helper Module
 version=$($BB awk '{ print $3 }' $AKHOME/vertmp) $($BB grep -oE '#.[0-9]' $AKHOME/vertmp)
 versionCode=1
@@ -481,13 +482,10 @@ do_devicecheck;
 do_versioncheck;
 do_levelcheck;
 
-miui_version="$(file_getprop /system/build.prop ro.miui.version.code_time)";
-test -z "$miui_version" || abort " " "MIUI is not supported. Aborting...";
-
 ui_print "Installing...";
 CORE=$($BB grep -oE 'ak.*core.sh' anykernel.sh);
 [ -f tools/$CORE ] || $BB ln -s $AKHOME/tools/ak*-core.sh $AKHOME/tools/$CORE;
-PATH="$AKHOME/bin:$PATH" home=$AKHOME $BB ash anykernel.sh $2;
+PATH="$AKHOME/bin:$PATH" ZIPFILE="$3" home=$AKHOME $BB ash anykernel.sh $2;
 if [ $? != 0 ]; then
   abort;
 fi;
