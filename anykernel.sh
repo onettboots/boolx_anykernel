@@ -33,16 +33,15 @@ dump_boot;
 
 kernel=/tmp/anykernel/
 
-function oc {
+function ocd {
     mv $kernel/oc $kernel/dtbo.img
 }
 
 case "$ZIPFILE" in
-  *OC*|*oc*)
-    ui_print "  • Flashing dtbo.img for support 60-102hz OC Timings Refresh Rate";
-    ui_print "  • Maybe not supported on some Roms, dissable it if you got stuck or bootloop,";
-    ui_print "  • and use OC Framerate Override methode just support 60-81hz";
-    oc
+  *OCD*|*ocd*)
+    ui_print "  • Flashing dtbo.img for support 60-90hz/102hz OC Timings Refresh Rate";
+    ui_print "  • Use that With Your Own Risk,";
+    ocd
     ;;
     *)
     ui_print "";
