@@ -1,101 +1,49 @@
-# AnyKernel3 Ramdisk Mod Script
-# osm0sis @ xda-developers
+### AnyKernel3 Ramdisk Mod Script
+## osm0sis @ xda-developers
 
-## AnyKernel setup
-# begin properties
+### AnyKernel setup
+# global properties
 properties() { '
-kernel.string=Bool-X Kernel by @OnettBoots
-do.devicecheck=1
+kernel.string=Boolx Nethunter @onettboots
+do.devicecheck=0
 do.modules=0
-do.systemless=1
+do.systemless=0
 do.cleanup=1
-do.cleanuponabort=1
-device.name1=raphael
-device.name2=raphaelin
+do.cleanuponabort=0
+device.name1=
+device.name2=
+device.name3=
+device.name4=
+device.name5=
 supported.versions=
 supported.patchlevels=
+supported.vendorpatchlevels=
 '; } # end properties
 
-# shell variables
-block=/dev/block/bootdevice/by-name/boot;
-is_slot_device=0;
-ramdisk_compression=auto;
-patch_vbmeta_flag=auto;
-no_block_display=true;
+### AnyKernel install
+## boot shell variables
+BLOCK=boot;
+IS_SLOT_DEVICE=auto;
+RAMDISK_COMPRESSION=auto;
+PATCH_VBMETA_FLAG=auto;
 
+# import functions/variables and setup patching - see for reference (DO NOT REMOVE)
+. tools/ak3-core.sh
 
-## AnyKernel methods (DO NOT CHANGE)
-# import patching functions/variables - see for reference
-. tools/ak3-core.sh;
-
-## AnyKernel boot install
-dump_boot;
-
-kernel=/tmp/anykernel/
-
-function ocd {
-    mv $kernel/oc $kernel/dtbo.img
-}
-
-case "$ZIPFILE" in
-  *OCD*|*ocd*)
-    ui_print "  • Flashing dtbo.img for support 60-90hz/102hz OC Timings Refresh Rate";
-    ui_print "  • Use that With Your Own Risk,";
-    ocd
-    ;;
-    *)
-    ui_print "";
-    ;;
+kernel_version=$(cat /proc/version | awk -F '-' '{print $1}' | awk '{print $3}')
+case "$kernel_version" in
+    5.10.*) supp=true ;;
+    *) supp=false ;;
 esac
 
-case "$ZIPFILE" in
-  *66fps*|*66hz*)
-    ui_print "  • Setting 66 Hz refresh rate"
-    patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=1"
-    ;;
-  *69fps*|*69hz*)
-    ui_print "  • Setting 69 Hz refresh rate"
-    patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=2"
-    ;;
-  *72fps*|*72hz*)
-    ui_print "  • Setting 72 Hz refresh rate"
-    patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=3"
-    ;;
-  *75fps*|*75hz*)
-    ui_print "  • Setting 75 Hz refresh rate"
-    patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=4"
-    ;;
-  *81fps*|*81hz*)
-    ui_print "  • Setting 81 Hz refresh rate"
-    patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=5"
-    ;;    
-  *)
-    patch_cmdline "msm_drm.framerate_override" ""
-    fr=$(cat /sdcard/framerate_override | tr -cd "[0-9]");
-    [ $fr -eq 66 ] && ui_print "  • Setting 66 Hz refresh rate" && patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=1"
-    [ $fr -eq 69 ] && ui_print "  • Setting 69 Hz refresh rate" && patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=2"
-    [ $fr -eq 72 ] && ui_print "  • Setting 72 Hz refresh rate" && patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=3"
-    [ $fr -eq 75 ] && ui_print "  • Setting 75 Hz refresh rate" && patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=4"
-    [ $fr -eq 81 ] && ui_print "  • Setting 81 Hz refresh rate" && patch_cmdline "msm_drm.framerate_override" "msm_drm.framerate_override=5"
-    ;;
-esac
+ui_print " " "-> 5.10 Kernel: $supp"
+$supp || exit 1
 
-write_boot;
-## end boot install
-
-
-# shell variables
-#block=vendor_boot;
-#is_slot_device=1;
-#ramdisk_compression=auto;
-#patch_vbmeta_flag=auto;
-
-# reset for vendor_boot patching
-#reset_ak;
-
-
-## AnyKernel vendor_boot install
-#split_boot; # skip unpack/repack ramdisk since we don't need vendor_ramdisk access
-
-#flash_boot;
-## end vendor_boot install
+# boot install
+if [ -L "/dev/block/bootdevice/by-name/init_boot_a" -o -L "/dev/block/by-name/init_boot_a" ]; then
+    split_boot # for devices with init_boot ramdisk
+    flash_boot # for devices with init_boot ramdisk
+else
+    dump_boot # use split_boot to skip ramdisk unpack, e.g. for devices with init_boot ramdisk
+    write_boot # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
+fi
