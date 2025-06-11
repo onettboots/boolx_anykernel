@@ -4,7 +4,7 @@
 ### AnyKernel setup
 # global properties
 properties() { '
-kernel.string=Boolx Nethunter @onettboots
+kernel.string=Boolx Nethunter @onettboots NKSU
 do.devicecheck=0
 do.modules=0
 do.systemless=0
