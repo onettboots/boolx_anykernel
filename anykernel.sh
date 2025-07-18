@@ -34,17 +34,18 @@ dump_boot;
 kernel=/tmp/anykernel/
 
 function ocd {
-    mv $kernel/oc $kernel/dtbo.img
+    rm $kernel/dtbo.img
+    mv $kernel/ocd $kernel/dtbo.img
 }
 
 case "$ZIPFILE" in
   *OCD*|*ocd*)
-    ui_print "  • Flashing dtbo.img for support 60-90hz/102hz OC Timings Refresh Rate";
+    ui_print "  • Flashing dtbo.img with OCD Patched for support 60-90hz/102hz OC Timings Refresh Rate";
     ui_print "  • Use that With Your Own Risk,";
     ocd
     ;;
     *)
-    ui_print "";
+    ui_print "  • Flashing Without OCD Support Only 60HZ";
     ;;
 esac
 
