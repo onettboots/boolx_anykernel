@@ -4,7 +4,7 @@
 ### AnyKernel setup
 # global properties
 properties() { '
-kernel.string=Kernel by aryannn999 @ xda-developers
+kernel.string=Sweet Nethunter by onettboots @telegram @github
 do.devicecheck=1
 do.modules=0
 do.systemless=1
