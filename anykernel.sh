@@ -4,7 +4,7 @@
 ### AnyKernel setup
 # global properties
 properties() { '
-kernel.string=BoolxKernel for Xiaomi Trinket devices by @onettboots
+kernel.string=Boolx Kernel for Xiaomi Trinket devices by @onettboots
 do.devicecheck=1
 do.modules=0
 do.systemless=1
@@ -13,7 +13,7 @@ do.cleanuponabort=0
 device.name1=ginkgo
 device.name2=willow
 device.name3=laurel_sprout
-supported.versions=10.0-16.0
+supported.versions=10.0-17.0
 supported.patchlevels=
 supported.vendorpatchlevels=
 '; } # end properties
